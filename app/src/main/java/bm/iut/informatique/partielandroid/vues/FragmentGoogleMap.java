@@ -1,8 +1,10 @@
 package bm.iut.informatique.partielandroid.vues;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -13,20 +15,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import bm.iut.informatique.partielandroid.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragmentGoogleMap.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragmentGoogleMap#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentGoogleMap extends Fragment implements
         OnMapReadyCallback {
 
@@ -40,7 +43,13 @@ public class FragmentGoogleMap extends Fragment implements
 
     private final String TAG = "FRAGMENT GOOGLE MAP :";
 
+    private FusedLocationProviderClient serviceLocalisationClient;
+    private LocationRequest requeteLocalisation;
+    private LocationCallback miseAJourLocalisation;
+
     private final int CODE_REQUETE = 1;
+
+    private GoogleMap googleMapCourante;
 
     public FragmentGoogleMap() {
         // Required empty public constructor
@@ -62,6 +71,7 @@ public class FragmentGoogleMap extends Fragment implements
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        serviceLocalisationClient = LocationServices.getFusedLocationProviderClient(getContext());
     }
 
     @Override
@@ -102,14 +112,27 @@ public class FragmentGoogleMap extends Fragment implements
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        googleMapCourante = googleMap;
         demanderPermissionsUtilisateur();
+        creerRequeteLocalisation();
+    }
+
+    /**
+     * Méthode qui défini les paramètres de la localisation
+     */
+    @SuppressLint("RestrictedApi")
+    protected void creerRequeteLocalisation() {
+        requeteLocalisation = new LocationRequest();
+        requeteLocalisation.setInterval(10000);
+        requeteLocalisation.setFastestInterval(5000);
+        requeteLocalisation.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void demanderPermissionsUtilisateur() {
         //Demande la permission à l'utilisateur pour utiliser la localisation
         String permissions[] = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ActivityCompat.checkSelfPermission(getContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED) {
-
+            activerToutLesServicesDeLocalisation();
         } else {
             requestPermissions(permissions, CODE_REQUETE);
         }
@@ -129,12 +152,71 @@ public class FragmentGoogleMap extends Fragment implements
                     grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                     permissions[1].equals(Manifest.permission.ACCESS_COARSE_LOCATION) &&
                     grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: TOUT EST BON");
+                    activerToutLesServicesDeLocalisation();
             } else {
                 Toast.makeText(getContext(), "L'application ne fonctionnera pas si vous n'acceptez pas les demandes de permissions", Toast.LENGTH_LONG).show();
             }
         }
     }
+
+    /**
+     * Active tout les services de localisation nécéssaire pour la GoogleMap
+     */
+    @SuppressLint("MissingPermission")
+    private void activerToutLesServicesDeLocalisation() {
+        googleMapCourante.setMyLocationEnabled(true);
+
+        //Ecouteur pour surcharger la méthode de clique du calque de localisation
+        googleMapCourante.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public boolean onMyLocationButtonClick() {
+                serviceLocalisationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location localisation) {
+                        if(localisation != null) {
+                            changerLocalisationCamera(localisation, 17);
+                        }
+                    }
+                });
+                return true;
+            }
+        });
+
+        // Récupère la dernière localisation connu au démarrage de l'application
+        serviceLocalisationClient.getLastLocation()
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location localisation) {
+                        if (localisation != null) {
+                            changerLocalisationCamera(localisation, 17);
+                        }
+                    }
+                });
+
+        //A chaque nouvelle mise à jour de la localisation, le code passe dans cette méthode
+        miseAJourLocalisation = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult resultatLocalisation) {
+                for (Location localisation : resultatLocalisation.getLocations()) {
+                }
+            }
+        };
+
+        //Active la récupération régulière des données de localisation
+        serviceLocalisationClient.requestLocationUpdates(requeteLocalisation, miseAJourLocalisation, null);
+    }
+    /**
+     * Méthode qui déplace la caméra vers une nouvelle localisation
+     * @param nouvelleLocalisation
+     */
+    private void changerLocalisationCamera(Location nouvelleLocalisation, int niveauZoom) {
+        CameraUpdate pointACentrer = CameraUpdateFactory.newLatLng(new LatLng(nouvelleLocalisation.getLatitude(), nouvelleLocalisation.getLongitude()));
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(niveauZoom);
+        googleMapCourante.moveCamera(pointACentrer);
+        googleMapCourante.animateCamera(zoom);
+    }
+
 
 
     public interface OnFragmentInteractionListener {
