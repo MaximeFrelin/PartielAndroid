@@ -35,6 +35,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
@@ -242,6 +243,11 @@ public class FragmentGoogleMap extends Fragment implements
                     public void onSuccess(Location localisation) {
                         if (localisation != null) {
                             changerLocalisationCamera(localisation, 17);
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(new LatLng(localisation.getLatitude(), localisation.getLongitude()));
+                            markerOptions.title("Altitude");
+                            markerOptions.snippet(localisation.getAltitude()+"");
+                            googleMapCourante.addMarker(markerOptions);
                         }
                     }
                 });
@@ -250,8 +256,11 @@ public class FragmentGoogleMap extends Fragment implements
         miseAJourLocalisation = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult resultatLocalisation) {
-                for (Location localisation : resultatLocalisation.getLocations()) {
-                }
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(new LatLng(resultatLocalisation.getLastLocation().getLatitude(), resultatLocalisation.getLastLocation().getLongitude()));
+                markerOptions.title("Altitude");
+                markerOptions.snippet(resultatLocalisation.getLastLocation().getAltitude()+"");
+                googleMapCourante.addMarker(markerOptions);
             }
         };
 
@@ -285,8 +294,6 @@ public class FragmentGoogleMap extends Fragment implements
                 String lats = "" + dernierePosition.getLatitude();
                 String longs = "" + dernierePosition.getLongitude();
                 String alt = "" + dernierePosition.getAltitude();
-
-                Toast.makeText(getActivity(), alt, Toast.LENGTH_LONG).show();
 
             }
 
