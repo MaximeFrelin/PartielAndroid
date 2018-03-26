@@ -1,5 +1,6 @@
 package bm.iut.informatique.partielandroid.vues;
 
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -15,6 +16,8 @@ import bm.iut.informatique.partielandroid.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentGoogleMap.OnFragmentInteractionListener {
+
+    Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

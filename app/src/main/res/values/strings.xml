@@ -8,4 +8,9 @@
 
     <string name="fragment_google_map">Hello blank fragment</string>
     <string name="action_map">Google Map</string>
+    <string name="key_search_delay">key_search_delay</string>
+    <string name="key_search_radius">key_search_radius</string>
+    <string name="key_location_switch">key_location_switch</string>
+    <string name="key_requete_api_intent">key_requete_api_intent</string>
+    <string name="key_requete_api_path">key_requete_api_path</string>
 </resources>
