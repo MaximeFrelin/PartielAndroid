@@ -7,8 +7,13 @@
     <string name="action_settings">Settings</string>
 
     <string name="fragment_google_map">Hello blank fragment</string>
-    <string name="action_map">Google Map</string>
     <string name="action_home">Home</string>
+    <string name="action_map">Google Map</string>*
+    <string name="key_search_delay">key_search_delay</string>
+    <string name="key_search_radius">key_search_radius</string>
+    <string name="key_location_switch">key_location_switch</string>
+    <string name="key_requete_api_intent">key_requete_api_intent</string>
+    <string name="key_requete_api_path">key_requete_api_path</string>*
     <string name="title_activity_activite_parametre">Settings</string>
 
     <!--Chaine de caractères relatif au menu hamburger-->
@@ -90,8 +95,9 @@
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
 
-    <string name="pref_title_vibrate">Vibrate</string>
-
     <string name="titre_is_circle_dawn">is circle dawn ? </string>
     <string name="titre_dummy_location">Dummy Location : </string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+>>>>>>> e43c391a6f5fd33f322ec7d2046482ed80602105
 </resources>
