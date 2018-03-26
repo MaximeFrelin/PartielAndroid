@@ -1,5 +1,6 @@
 package bm.iut.informatique.partielandroid.vues;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            changerDeFragment("parametre");
             return true;
         }
 
@@ -86,8 +88,12 @@ public class MainActivity extends AppCompatActivity
         switch (nomFragment) {
             case "googleMap" :
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.drawer_layout, new FragmentGoogleMap(), "GoogleMap").addToBackStack("my_fragment")
+                        .replace(R.id.contenu_principal, new FragmentGoogleMap(), "GoogleMap").addToBackStack("my_fragment")
                         .commit();
+                break;
+            case "parametre" :
+                Intent intentionVersParametre = new Intent(MainActivity.this, ActiviteParametre.class);
+                startActivity(intentionVersParametre);
                 break;
         }
     }

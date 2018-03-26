@@ -2,9 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bm.iut.informatique.partielandroid">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -26,8 +25,11 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAwZhvv53NffIFZXBOQirimUaaro1Wue9Y"/>
+            android:value="AIzaSyAwZhvv53NffIFZXBOQirimUaaro1Wue9Y" />
 
+        <activity
+            android:name=".vues.ActiviteParametre"
+            android:label="@string/title_activity_activite_parametre"></activity>
     </application>
 
 </manifest>
