@@ -8,7 +8,12 @@
 
     <string name="fragment_google_map">Hello blank fragment</string>
     <string name="action_map">Google Map</string>
+    <string name="action_home">Home</string>
     <string name="title_activity_activite_parametre">Settings</string>
+
+    <!--Chaine de caractères relatif au menu hamburger-->
+    <string name="chaine_mail_etudiant">lucas.paulin@edu.univ-fcomte.fr</string>
+
 
     <!-- Strings related to Settings -->
 
@@ -86,4 +91,7 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <string name="titre_is_circle_dawn">is circle dawn ? </string>
+    <string name="titre_dummy_location">Dummy Location : </string>
 </resources>

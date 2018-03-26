@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import bm.iut.informatique.partielandroid.R;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FragmentGoogleMap.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentGoogleMap.OnFragmentInteractionListener, FragmentHome.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        changerDeFragment("GoogleMap");
     }
 
     @Override
@@ -60,7 +62,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            changerDeFragment("parametre");
+            Intent intentionVersParametre = new Intent(MainActivity.this, ActiviteParametre.class);
+            startActivity(intentionVersParametre);
             return true;
         }
 
@@ -77,6 +80,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_camera :
                 changerDeFragment("googleMap");
                 break;
+            case R.id.nav_home :
+                changerDeFragment("home");
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -91,9 +97,10 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.contenu_principal, new FragmentGoogleMap(), "GoogleMap").addToBackStack("my_fragment")
                         .commit();
                 break;
-            case "parametre" :
-                Intent intentionVersParametre = new Intent(MainActivity.this, ActiviteParametre.class);
-                startActivity(intentionVersParametre);
+            case "home" :
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.contenu_principal, new FragmentHome(), "HomeFragment").addToBackStack("my_home_fragment")
+                        .commit();
                 break;
         }
     }
